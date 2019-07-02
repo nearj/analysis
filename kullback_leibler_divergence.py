@@ -24,6 +24,7 @@ SAVE_OPT_PROB = 'probability/'
 SAVE_OPT_CUMUL = 'cumulative/'
 
 SAVE_OPT_20S = '20s/'
+SAVE_OPT_AFTER = '20-60s/'
 
 EXT_PNG = '.png'
 EXT_JSON = '.json'
@@ -92,21 +93,28 @@ def save_dir(data_list_with_tag, action, directory):
         df.to_excel(save_excel_path)
     pass
 
-def save_fig_dir(data_list_with_tag, action, directory, xlabel, ylabel, save_20s = False):
+def save_fig_dir(data_list_with_tag, action, directory, xlabel, ylabel, time):
+    directory += str(time[0]) + '_' + str(time[1]) + 's/'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    
     for tmp in list(zip(*data_list_with_tag)):
         name = tmp[0]
         processed = action(tmp[1])
-        save_2d(processed, name, xlabel, ylabel, directory,  save_20s = save_20s)
+        save_2d(processed, name, xlabel, ylabel, directory, time)
     plt.clf()
     pass
 
-def save_2d(data, name, xlabel, ylabel, directory, save_20s = False):
+def save_2d(data, name, xlabel, ylabel, directory, time):
     plt.clf()
     plt.xlabel(xlabel, fontsize = 18)
     plt.ylabel(ylabel, fontsize = 18)
-
-    if save_20s:
-        plt.plot(np.linspace(4, 22, 54), data[24:132:2])
+    
+    if time:
+        scale = int(np.ceil(float(len(data))/60))
+        start = time[0] * scale
+        end = time[1] * scale
+        plt.plot(np.linspace(time[0], time[1], end - start - 1), data[slice(start, end)])
     else:
         plt.plot(np.linspace(0, 60, len(data)), data)
 
