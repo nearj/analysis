@@ -22,8 +22,6 @@ SAVE_DIR_CD = './data/processed/motion/cumul_dist/'
 SAVE_COMPACT_OPTION = 'compact/'
 COLUMNS_NON_COMP = [str([n % 5, (n % 25) // 5, (n % 125) // 25, n // 625]) for n in range(625)]
 
-
-
 def _select_sub_bin(sub_bin, indices):
     tmp = []
     for prop in _sub_bins_prop:
