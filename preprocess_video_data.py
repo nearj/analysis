@@ -100,10 +100,10 @@ def capture_to_optflow(cap):
         if frame_num % 10 == 1:
             gray = cv2.cvtColor(frame[OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
             optical_flows.append(
-                cv2.calcOpticalFlowFarneback(prevgray, gray, None, 0.5, 3, 15, 3, 5, 1.2, 0))
+                cv2.calcOpticalFlowFarneback(prevgray, gray, None, 0.5, 4, 43, 5, 7, 1.5, 0))
         if frame_num % 10 == 0:
             prevgray = cv2.cvtColor(frame[OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
-            bar.numerator = tick
+        bar.numerator = tick
         print(bar, end = '\r')
         sys.stdout.flush()
         frame_num += 1

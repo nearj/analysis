@@ -179,10 +179,10 @@ kld_cumul_list = apply_on_dir(optflow_dist_list, motion_cumul_dist_list,
 
 
 
-save_graph = SAVE_DIR + SAVE_GRAPH_OPTION
+directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_OPT
 save_fig_dir(optflow_dist_list,
-             to_difference_of_entropy,
-             save_graph + SAVE_OPT_DIF,
+             to_entrophy
+             directory,
              'sec',
              'entropy')
 
