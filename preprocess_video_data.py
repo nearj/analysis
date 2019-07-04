@@ -9,7 +9,7 @@ from etaprogress.progress import ProgressBar
 """Previous version of Kullback Leivier Divergence(KLD).
 
 This module calculate real values of KLD of optical flow with motion platform vector. See
-https://en.wikipedia.org/wiki/Kullback–Leibler_divergence.
+https://en.wikipedia.org/wiki/Kullback-Leibler_divergence.
 
 Examples:
     Nope.
@@ -97,11 +97,11 @@ def capture_to_optflow(cap):
     while frame_num < frame_max:
         ret, frame = cap.read()
 
-        if frame_num % 10 == 1:
+        if frame_num % 20 == 19:
             gray = cv2.cvtColor(frame[OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
             optical_flows.append(
                 cv2.calcOpticalFlowFarneback(prevgray, gray, None, 0.5, 4, 43, 5, 7, 1.5, 0))
-        if frame_num % 10 == 0:
+        if frame_num % 20 == 0:
             prevgray = cv2.cvtColor(frame[OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
         bar.numerator = tick
         print(bar, end = '\r')
@@ -122,7 +122,7 @@ def optflow_to_hist(optical_flows,
            optical_flows:
 
        Returns:
-           probability of optical flow(12 * 5): sum-upped probability
+           probability of optical flow(12 * 5): sumupped probability
 
        TODO:
            *parallelization

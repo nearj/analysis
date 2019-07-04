@@ -110,13 +110,10 @@ def save_2d(data, name, xlabel, ylabel, directory, time):
     plt.xlabel(xlabel, fontsize = 18)
     plt.ylabel(ylabel, fontsize = 18)
     plt.ylim([0,4.3])
-    if time:
-        scale = int(np.ceil(float(len(data))/60))
-        start = time[0] * scale
-        end = time[1] * scale
-        plt.plot(np.linspace(time[0], time[1], end - start), data[slice(start, end)])
-    else:
-        plt.plot(np.linspace(0, 60, len(data)), data)
+    scale = int(np.ceil(float(len(data))/60))
+    start = time[0] * scale
+    end = time[1] * scale
+    plt.plot(np.linspace(time[0], time[1], end - start), data[slice(start, end)])
 
     plt.savefig(directory + name + EXT_PNG, dpi = 300, bbox_inches = "tight")
     plt.close()
@@ -130,7 +127,7 @@ def kullback_leibler_divergence(optflow_dist, motion_dist):
     for tmp in non_zero_motion_dist:
         res += np.sum(non_zero_optflow_dist * np.log2(non_zero_optflow_dist) -
                       non_zero_optflow_dist * np.log2(tmp))
-    return res / len(motion_dist)
+    return res 
 
 def default_preprocess(x, y):
     return x, y
@@ -164,14 +161,12 @@ def to_entropy(data):
         res.append(-np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]])))
     return res
 
-def to_entropy_cumlative(data)
+def to_cumulative(data):
     res = []
-
-    ent = 0
+    _sum = 0
     for tmp in data:
-        tmp = np.asarray(tmp)
-        ent += -np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]]))
-        res.append(ent)
+        _sum += tmp
+        res.append(_sum)
     return res
 
 optflow_dist_list = load_video_data_dir()
