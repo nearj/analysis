@@ -114,7 +114,7 @@ def save_2d(data, name, xlabel, ylabel, directory, time):
         scale = int(np.ceil(float(len(data))/60))
         start = time[0] * scale
         end = time[1] * scale
-        plt.plot(np.linspace(time[0], time[1], end - start - 1), data[slice(start, end)])
+        plt.plot(np.linspace(time[0], time[1], end - start), data[slice(start, end)])
     else:
         plt.plot(np.linspace(0, 60, len(data)), data)
 
@@ -156,7 +156,7 @@ def to_difference_of_entropy(data):
     dif = np.asarray(dif)
     return dif;
 
-def to_entrophy(data):
+def to_entropy(data):
     res = []
     for tmp in data:
         tmp = np.asarray(tmp)
