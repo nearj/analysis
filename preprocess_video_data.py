@@ -169,7 +169,7 @@ def opt_flow_prob_from_dir(load_dir):
         tmp.append([video_name, probability])
         total_bar.numerator = tick
         tick += 1
-        print(total_bar, end = '\r')
+        print(tick)
         sys.stdout.flush()
     return tmp
 
