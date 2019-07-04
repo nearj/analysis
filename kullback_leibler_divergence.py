@@ -109,7 +109,7 @@ def save_2d(data, name, xlabel, ylabel, directory, time):
     plt.clf()
     plt.xlabel(xlabel, fontsize = 18)
     plt.ylabel(ylabel, fontsize = 18)
-    
+    plt.ylim([0,4.3])
     if time:
         scale = int(np.ceil(float(len(data))/60))
         start = time[0] * scale
@@ -158,13 +158,21 @@ def to_difference_of_entropy(data):
 
 def to_entropy(data):
     res = []
+    
     for tmp in data:
         tmp = np.asarray(tmp)
         res.append(-np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]])))
     return res
 
+def to_entropy_cumlative(data)
+    res = []
 
-
+    ent = 0
+    for tmp in data:
+        tmp = np.asarray(tmp)
+        ent += -np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]]))
+        res.append(ent)
+    return res
 
 optflow_dist_list = load_video_data_dir()
 motion_prob_dist_list = load_motion_data_dir(is_compact = True)
@@ -177,12 +185,13 @@ kld_cumul_list = apply_on_dir(optflow_dist_list, motion_cumul_dist_list,
                               lambda x, y: (x[:-1:2], y))
 
 
-directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_ENT + SAVE_OPT_OPT
+directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_ENT + SAVE_OPT_OPT + SAVE_OPT_CUMUL
 save_fig_dir(optflow_dist_list,
-             to_difference_of_entropy,
-             save_graph + SAVE_OPT_DIF,
+             to_entropy_cumulative,
+             directory,
              'sec',
-             'entropy')
+             'entropy',
+             [0,60])
 
 save_graph = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_ENT + SAVE_OPT_MOT + SAVE_OPT_PROB
 save_fig_dir(kld_prob_list,
