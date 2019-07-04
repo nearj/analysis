@@ -169,7 +169,7 @@ def opt_flow_prob_from_dir(load_dir):
         tmp.append([video_name, probability])
         total_bar.numerator = tick
         tick += 1
-        print(tick + "/21 :\n")
+        print(str(tick) + "/21 :\n")
     return tmp
 
 def save(video_name, probability, save_dir = SAVE_DIR):
