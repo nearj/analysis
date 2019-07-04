@@ -97,11 +97,11 @@ def capture_to_optflow(cap):
     while frame_num < frame_max:
         ret, frame = cap.read()
 
-        if frame_num % 10 == 1:
+        if frame_num % 20 == 19:
             gray = cv2.cvtColor(frame[OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
             optical_flows.append(
                 cv2.calcOpticalFlowFarneback(prevgray, gray, None, 0.5, 4, 43, 5, 7, 1.5, 0))
-        if frame_num % 10 == 0:
+        if frame_num % 20 == 0:
             prevgray = cv2.cvtColor(frame[OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
         bar.numerator = tick
         print(bar, end = '\r')
@@ -169,7 +169,7 @@ def opt_flow_prob_from_dir(load_dir):
         tmp.append([video_name, probability])
         total_bar.numerator = tick
         tick += 1
-        print(tick + "/21 :\n")
+        print(str(tick) + "/21 :\n")
     return tmp
 
 def save(video_name, probability, save_dir = SAVE_DIR):
