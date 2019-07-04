@@ -139,8 +139,9 @@ def optflow_to_hist(optical_flows,
     bar2   = ProgressBar(len(polars_total), max_width = 100)
     tick   = 0
     counts_set = []
-    counts = np.zeros(60)
+    # counts = np.zeros(60)
     for polars in polars_total:
+        counts = np.zeros(60)
         for polar in polars:
             counts[bin_selection(polar)] += 1
         counts_set.append(counts / counts.sum())
