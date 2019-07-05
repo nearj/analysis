@@ -109,7 +109,7 @@ def save_2d(data, name, xlabel, ylabel, directory, time):
     plt.clf()
     plt.xlabel(xlabel, fontsize = 18)
     plt.ylabel(ylabel, fontsize = 18)
-    plt.ylim([0,4.3])
+    # plt.ylim([0,4.3])
     scale = int(np.ceil(float(len(data))/60))
     start = time[0] * scale
     end = time[1] * scale
@@ -119,10 +119,15 @@ def save_2d(data, name, xlabel, ylabel, directory, time):
     plt.close()
     pass
 
-def kullback_leibler_divergence(optflow_dist, motion_dist):
+def kullback_leibler_divergence(optflow_dist, motion_dist, is_compact = False):
     # assert optical flows[0] == motion data[0]; is it same file?
     non_zero_optflow_dist = optflow_dist[np.where(optflow_dist > 0)[0]]
-    non_zero_motion_dist = np.asarray(motion_dist)
+    if is_compact:
+        non_zero_motion_dist = np.asarray(motion_dist)
+    else:
+        non_zero_motion_dist = np.asarray(
+            [0.0001 if tmp == 0 else tmp for tmp in motion_dist])
+        
     res = 0
     for tmp in non_zero_motion_dist:
         res += np.sum(non_zero_optflow_dist * np.log2(non_zero_optflow_dist) -
@@ -180,9 +185,9 @@ kld_cumul_list = apply_on_dir(optflow_dist_list, motion_cumul_dist_list,
                               lambda x, y: (x[:-1:2], y))
 
 
-directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_ENT + SAVE_OPT_OPT + SAVE_OPT_CUMUL
+directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_ENT + SAVE_OPT_OPT
 save_fig_dir(optflow_dist_list,
-             to_entropy_cumulative,
+             to_entropy,
              directory,
              'sec',
              'entropy',

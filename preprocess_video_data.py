@@ -24,7 +24,7 @@ Todo:
 
 ########################################## GOLBAL VARIABLES ########################################
 DIM_OF_IMG    = (768, 1024) # Or, we can get dimension of image from file
-OPT_FLOW_REGION = np.index_exp[191:384, 255:512]
+OPT_FLOW_REGION = np.index_exp[191:576, 255:768]
 EXT_JSON      = '.json'
 EXT_EXCEL     = '.xlsx'
 EXT_MP4       = '.mp4'
