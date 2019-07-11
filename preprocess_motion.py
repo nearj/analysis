@@ -41,7 +41,7 @@ def _load_dir(directory=RAW_DATA_DIR):
     ret = {}
     for _file in glob.glob(directory + "*" + EXT_RAW_DATA):
         _file_name = os.path.splitext(os.path.basename(_file))[0]
-        _raw_data = np.genfromtxt(codecs.open(_file).
+        _raw_data = np.genfromtxt(codecs.open(_file, encoding='UTF8').
                                   readline().replace(u'\ufeff', '').split(' ')[:-1], dtype='i4')
         ret[_file_name] = _raw_data.reshape((int)(_raw_data.size / RAW_DATA_FRAME_SIZE),
                                             RAW_DATA_FRAME_SIZE)
@@ -97,7 +97,7 @@ def _to_probability(motion_vectors):
     return motion_vectors, _tmp_prob
 
 
-def main(args):
+def main():
     load = _load_dir()
     for key in load.keys():
         mtvecs, probs = _to_probability(load[key])
@@ -105,11 +105,4 @@ def main(args):
         _save(save_dir, mtvecs, probs)
 
 if __name__ == '__main__':
-    import argparse, sys
-    parser = argparse.ArgumentParser(
-        description='caculate data and _save it as json and excel')
-
-    parser.add_argument('-use_default', "--use_default", action='store_true')
-    parser.add_argument('-dir', "--dir", nargs='?', type=str, help='directory')
-    parser.add_argument('-file', "--file", nargs='?', type=str, help = 'YET IMPLEMENTED!')
-    main(parser.parse_args())
+    main()

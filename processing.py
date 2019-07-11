@@ -192,21 +192,26 @@ def do_it(target, max_time):
     kld = kullback_leibler_divergence(optflow_dist, motion_dist)
     save_2d(kld, target, 'sec', 'entropy', directory, [0, max_time])
 
-def main(idx):
+def main(args):
     targets0 = ['S1_pitch', 'S1_yaw', 'S1_roll', 'S1_surge', 'S1_sway',
            'S2_pitch', 'S2_yaw', 'S2_roll', 'S2_surge', 'S2_sway',
            'S3_pitch', 'S3_yaw', 'S3_roll', 'S3_surge', 'S3_sway']
     targets1 = ['S4', 'S5', 'S6']
     targets2 = ['S1_heave', 'S2_heave', 'S3_heave']
     target_set = [targets0, targets1, targets2]
-    if idx == 0:
+    if args == 0:
         max_time = 20
-    elif idx == 1:
+    elif args == 1:
         max_time = 60
     else:
         max_time = 10
-    for target in target_set[idx]:
+    for target in target_set[args]:
         do_it(target, max_time)
+
+if __name__ == '__main__':
+    main(0)
+    main(1)
+    main(2)
 
 
 # optflow_dist_list = prevideo.opt_flow_prob_from_dir(prevideo.LOAD_DIR)
