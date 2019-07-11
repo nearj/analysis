@@ -38,10 +38,10 @@ project
 ```
 
 ## Explanation
-preprocess_motion.py: subsampling(3hz) raw motion data of txt file to probability of all motion vector in experiment as json and excel file
-preprocess_video.py(TODO): subsampling(3hz) raw video, however 1024*768 pixel probability are hard to save as json or other format. For now, it used to import optical flow data in processing.py.
-processing.py(TODO): From subsampled data by preprocess_video.py and preprocess_motion.py, this module calculate KLD and Entropy of optical flow and save it as jpg.
-make_video_with_SSQ.py: To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ
+preprocess_motion.py: subsampling(3hz) raw motion data of txt file to probability of all motion vector in experiment as json and excel file  
+preprocess_video.py(TODO): subsampling(3hz) raw video, however 1024*768 pixel probability are hard to save as json or other format. For now, it used to import optical flow data in processing.py.  
+processing.py(TODO): From subsampled data by preprocess_video.py and preprocess_motion.py, this module calculate KLD and Entropy of optical flow and save it as jpg.  
+make_video_with_SSQ.py: To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ  
 
 
 ## Usage example
