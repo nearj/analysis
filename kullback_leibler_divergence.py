@@ -42,12 +42,17 @@ def load_motion_data_dir(directory = LOAD_MOTION_DIR, is_cumulative = False, is_
     if is_compact:
         directory += LOAD_COMPACT
 
+    tmp = {}
     tmp_data_list = []
     name_list = []
     for file in glob.glob(directory + "*" + EXT_JSON):
-        tmp_data_list.append(load_file(file))
-        name_list.append(os.path.splitext(os.path.basename(file))[0])
+        tmp[os.path.splitext(os.path.basename(file))[0]] = load_file(file)
+        tmp_data_list.append()
+        name_list.append()
 
+    ret = {}
+    if is_compact:
+        verbose_list = []
     verbose_list = None
     data_list = []
     if is_compact:
@@ -64,6 +69,7 @@ def load_motion_data_dir(directory = LOAD_MOTION_DIR, is_cumulative = False, is_
                         compact_verbose.append(tmp[0:-1])
                 file_data.append(compact_data)
                 file_verbose.append(compact_verbose)
+            ret
             data_list.append(file_data)
             verbose_list.append(file_verbose)
     else:
@@ -72,13 +78,10 @@ def load_motion_data_dir(directory = LOAD_MOTION_DIR, is_cumulative = False, is_
     return [name_list, data_list, verbose_list]
 
 def load_video_data_dir(directory = LOAD_VIDEO_DIR):
-    data_list = []
-    name_list = []
+    ret = {}
     for file in glob.glob(directory + "*" + EXT_JSON):
-        data_list.append(load_file(file))
-        name_list.append(os.path.splitext(os.path.basename(file))[0])
-
-    return [name_list, data_list]
+        ret[os.path.splitext(os.path.basename(file))[0]] = load_file(file)
+    return ret
 
 def save_dir(data_list_with_tag, action, directory):
     for tmp in list(zip(*data_list_with_tag)):
@@ -128,11 +131,11 @@ def kullback_leibler_divergence(optflow_dist, motion_dist, is_compact = False):
         non_zero_motion_dist = np.asarray(
             [0.0001 if tmp == 0 else tmp for tmp in motion_dist])
         
-    res = 0
+    ret = 0
     for tmp in non_zero_motion_dist:
-        res += np.sum(non_zero_optflow_dist * np.log2(non_zero_optflow_dist) -
+        ret += np.sum(non_zero_optflow_dist * np.log2(non_zero_optflow_dist) -
                       non_zero_optflow_dist * np.log2(tmp))
-    return res 
+    return ret 
 
 def default_preprocess(x, y):
     return x, y
@@ -145,45 +148,47 @@ def apply_on_dir(optflow_list, motion_list, action,
              for data_dir in list(zip(*[optflow_list[1], motion_list[1]]))]] # on directory
 
 def to_difference_of_entropy(data):
-    res = []
+    ret = []
     for tmp in data:
         tmp1 = 0
         for prob in tmp:
             if prob != 0:
                 tmp1 += - prob * np.log2(prob)
-        res.append(tmp1)
+        ret.append(tmp1)
 
     dif = []
-    dif = [res[i + 1] - res[i] for i in range(len(res) - 1)]
+    dif = [ret[i + 1] - ret[i] for i in range(len(ret) - 1)]
     dif = np.asarray(dif)
     return dif;
 
 def to_entropy(data):
-    res = []
-    
+    ret = []
     for tmp in data:
         tmp = np.asarray(tmp)
-        res.append(-np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]])))
-    return res
+        ret.append(-np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]])))
+    return ret
 
 def to_cumulative(data):
-    res = []
+    ret = []
     _sum = 0
     for tmp in data:
         _sum += tmp
-        res.append(_sum)
-    return res
+        ret.append(_sum)
+    return ret
 
 optflow_dist_list = load_video_data_dir()
 motion_prob_dist_list = load_motion_data_dir(is_compact = True)
 motion_cumul_dist_list = load_motion_data_dir(is_cumulative = True, is_compact = True)
 kld_prob_list = apply_on_dir(optflow_dist_list, motion_prob_dist_list,
                              kullback_leibler_divergence,
-                             lambda x, y: (x[:-1:2], y))
+                             lambda x, y: (x, y))
 kld_cumul_list = apply_on_dir(optflow_dist_list, motion_cumul_dist_list,
                               kullback_leibler_divergence,
-                              lambda x, y: (x[:-1:2], y))
+                              lambda x, y: (x, y))
 
+
+directory = SAVE_DIR + SAVE_TABLE_OPTION + SAVE_OPT_ENT + SAVE_OPT_OPT
+save_dir(optflow_dist_list, to_entropy, directory)
 
 directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_ENT + SAVE_OPT_OPT
 save_fig_dir(optflow_dist_list,
