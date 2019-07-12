@@ -96,7 +96,6 @@ def _to_probability(motion_vectors):
                 _tmp_prob.append(lookup_tbl[1][i])
     return motion_vectors, _tmp_prob
 
-
 def main():
     load = _load_dir()
     for key in load.keys():

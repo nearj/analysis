@@ -36,6 +36,7 @@ COLUMNS       = [str((n % 12) * 30) + 'deg//~' + str(BIN_MAGNITUDE[n // 12]) for
 ####################################################################################################
 
 ############################################# FUNCTIONS ############################################
+# HERE!
 @jit()
 def bin_selection(polar):
     tmp = 0
@@ -80,6 +81,7 @@ def bin_selection(polar):
             tmp += 24
     return tmp
 
+# HERE!
 def capture_to_optflow(cap):
     optical_flows = []
     prevgray      = cv2.cvtColor(cap.read()[1][OPT_FLOW_REGION], cv2.COLOR_BGR2GRAY)
@@ -106,7 +108,8 @@ def capture_to_optflow(cap):
         tick += 1
     return optical_flows
 
-def optflow_to_hist(optical_flows,
+# HERE!
+def optflow_to_hist(optical_flows, # HERE!
                     bin_magnitude = BIN_MAGNITUDE,
                     bin_degree = BIN_DEGREE):
     """Make histogam of optical flows. Currently, it calculate all of frame at end of frame. However
@@ -154,6 +157,7 @@ def optflow_to_hist(optical_flows,
             frame[i] = counts[frame[i]]
     return ret
 
+# HERE!
 def opt_flow_prob_from_file(video_file): # helper function on file
     print(video_file)
     cap = cv2.VideoCapture(video_file)
@@ -161,6 +165,8 @@ def opt_flow_prob_from_file(video_file): # helper function on file
     cap.release()
     probability = optflow_to_hist(optical_flows)
     return probability
+
+############################################# obselete #############################################
 
 def opt_flow_prob_from_dir(load_dir): # helper function on directory
     video_files = glob.glob(load_dir + "*" + EXT_MP4)
@@ -201,3 +207,4 @@ if __name__ == '__main__':
     parser.add_argument('-dir', "--dir", nargs='?', type=str, help='directory')
     parser.add_argument('-file', "--file", nargs='?', type=str, help = 'YET IMPLEMENTED!')
     main(parser.parse_args())
+############################################# obselete #############################################

@@ -20,7 +20,7 @@ SAVE_DIR          = './data/processed/'
 SAVE_TABLE_OPTION = 'table/'
 SAVE_GRAPH_OPTION = 'graph/'
 SAVE_OPT_DIF      = 'difference/'
-SAVE_OPT_KLD      = 'kullback_leibler_divergence/'
+SAVE_OPT_KLD      = '_kullback_leibler_divergence/'
 SAVE_OPT_ENT      = 'entropy/'
 SAVE_OPT_OPT      = 'optical_flow/'
 SAVE_OPT_MOT      = 'motion/'
@@ -45,48 +45,21 @@ EXP_SET = {'S1_pitch': 20, 'S1_yaw': 20, 'S1_roll': 20,
 # keys: name of experiment
 # values: times of experiment
 
-# def load_file(file, is_cumulative = False, is_compact = False):
+############################################ funcions ##############################################
+# HERE!
 def load_file(file):
     return pd.read_json(file).sort_index().to_numpy()
 
+
+# HERE!
 def load_motion_data_dir(directory = LOAD_MOTION_DIR):
     ret = {}
     for file in glob.glob(directory + "*" + EXT_JSON):
         ret[os.path.splitext(os.path.basename(file))[0]] = load_file(file)[:,1]
     return ret
 
-def load_video_data_dir(directory = LOAD_VIDEO_DIR):
-    ret = {}
-    for file in glob.glob(directory + "*" + EXT_JSON):
-        ret[os.path.splitext(os.path.basename(file))[0]] = load_file(file)
-    return ret
-
-def save_dir(data_list_with_tag, action, directory):
-    for tmp in list(zip(*data_list_with_tag)):
-        name = tmp[0]
-        processed = action(tmp[1])
-
-        df = pd.DataFrame(processed)
-        save_json_path = directory + name + EXT_JSON
-        save_excel_path = directory + name + EXT_EXCEL
-        df.to_json(save_json_path)
-        df.to_excel(save_excel_path)
-    pass
-
-def save_fig_dir(data_list_with_tag, action, directory, xlabel, ylabel, time):
-    directory += str(time[0]) + '_' + str(time[1]) + 's/'
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    for tmp in list(zip(*data_list_with_tag)):
-        name = tmp[0]
-        processed = action(tmp[1])
-        save_2d(processed, name, xlabel, ylabel, directory, time)
-    plt.clf()
-    pass
-
-############################################ funcions ##############################################
 @jit(forceobj=True)
+# HERE!
 def _kullback_helper(optflow, motion):
     ret = 0
     motion = np.log2(motion[0])
@@ -95,56 +68,22 @@ def _kullback_helper(optflow, motion):
         ret -= elt * motion
     return ret
 
-def kullback_leibler_divergence(optflow_dist, motion_dist, is_compact = False):
+# HERE!
+def _kullback_leibler_divergence(optflow_dist, motion_dist, is_compact = False): # HERE!
     ret = []
     for frame in optflow_dist:
         ret.append(_kullback_helper(frame, motion_dist))
     return ret
 
-def default_preprocess(x, y):
-    return x, y
-
-def apply_on_dir(optflow_list, motion_list, action,
-                 preprocess_at_file = default_preprocess):
-    return [optflow_list[0],                                                 # add file names.
-            [[action(*preprocess_at_file(data_file[0], data_file[1]))        # action
-              for data_file in list(zip(*[data_dir[0], data_dir[1]]))]     # on file
-             for data_dir in list(zip(*[optflow_list[1], motion_list[1]]))]] # on directory
-
-def apply_on_file(optflow_data, motion_data, action,
-                 preprocess_at_file = default_preprocess):
-    return [action(*preprocess_at_file(data_file[0], data_file[1]))        # action
-              for data_file in list(zip(*[optflow_data, motion_data]))]     # on file
-
-def _to_difference_of_entropy(data):
-    ret = []
-    for tmp in data:
-        tmp1 = 0
-        for prob in tmp:
-            if prob != 0:
-                tmp1 += - prob * np.log2(prob)
-        ret.append(tmp1)
-
-    dif = []
-    dif = [ret[i + 1] - ret[i] for i in range(len(ret) - 1)]
-    dif = np.asarray(dif)
-    return dif;
-
-def _to_entropy(data):
+# HERE!
+def _to_entropy(data): # HERE!
     ret = []
     for tmp in data:
         tmp = np.asarray(tmp)
         ret.append(-np.sum(tmp[np.where(tmp > 0)[0]] * np.log2(tmp[np.where(tmp > 0)[0]])))
     return ret
 
-def _to_cumulative(data):
-    ret = []
-    _sum = 0
-    for tmp in data:
-        _sum += tmp
-        ret.append(_sum)
-    return ret
-
+# HERE!
 def save_2d(data, name, xlabel, ylabel, directory, time, ylim = [-200000, 200000]):
     plt.clf()
 
@@ -174,6 +113,7 @@ def save_2d(data, name, xlabel, ylabel, directory, time, ylim = [-200000, 200000
     plt.close()
     pass
 
+# HERE!
 def do_it(target, max_time):
     optflow_dist = prevideo.opt_flow_prob_from_file('./data/raw/video/' + target + '.mp4')
     optflow_dist = optflow_dist[:(max_time * 3)] # here
@@ -184,12 +124,16 @@ def do_it(target, max_time):
     motion_prob_dist_list = load_motion_data_dir()
     if target in ['S1_surge', 'S1_sway', 'S2_surge', 'S2_sway', 'S3_surge', 'S3_sway']:
         motion_dist = np.ones(len(motion_prob_dist_list[target])) * 0.1
+        # reflecting surge and sway are not detected in motion of platform,
+        # we set it as 0.1 of modifier to probability of motion platform
     elif target in ['S4', 'S5', 'S6']:
         motion_dist = motion_prob_dist_list[target] * 0.1
+        # reflecting surge and sway are not detected in motion of platform,
+        # we set it as 0.1 of modifier to probability of motion platform
     else:
         motion_dist = motion_prob_dist_list[target]
     directory = SAVE_DIR + SAVE_GRAPH_OPTION + SAVE_OPT_KLD
-    kld = kullback_leibler_divergence(optflow_dist, motion_dist)
+    kld = _kullback_leibler_divergence(optflow_dist, motion_dist)
     save_2d(kld, target, 'sec', 'entropy', directory, [0, max_time])
 
 def main(args):
@@ -213,16 +157,85 @@ if __name__ == '__main__':
     main(1)
     main(2)
 
+############################################ obselete ##############################################
+def default_preprocess(x, y):
+    return x, y
+
+def apply_on_dir(optflow_list, motion_list, action,
+                 preprocess_at_file = default_preprocess):
+    return [optflow_list[0],                                                 # add file names.
+            [[action(*preprocess_at_file(data_file[0], data_file[1]))        # action
+              for data_file in list(zip(*[data_dir[0], data_dir[1]]))]     # on file
+             for data_dir in list(zip(*[optflow_list[1], motion_list[1]]))]] # on directory
+
+def apply_on_file(optflow_data, motion_data, action,
+                 preprocess_at_file = default_preprocess):
+    return [action(*preprocess_at_file(data_file[0], data_file[1]))        # action
+              for data_file in list(zip(*[optflow_data, motion_data]))]     # on file
+
+def _to_difference_of_entropy(data):
+    ret = []
+    for tmp in data:
+        tmp1 = 0
+        for prob in tmp:
+            if prob != 0:
+                tmp1 += - prob * np.log2(prob)
+        ret.append(tmp1)
+
+    dif = []
+    dif = [ret[i + 1] - ret[i] for i in range(len(ret) - 1)]
+    dif = np.asarray(dif)
+    return dif;
+
+def _to_cumulative(data):
+    ret = []
+    _sum = 0
+    for tmp in data:
+        _sum += tmp
+        ret.append(_sum)
+    return ret
+
+def save_dir(data_list_with_tag, action, directory):
+    for tmp in list(zip(*data_list_with_tag)):
+        name = tmp[0]
+        processed = action(tmp[1])
+
+        df = pd.DataFrame(processed)
+        save_json_path = directory + name + EXT_JSON
+        save_excel_path = directory + name + EXT_EXCEL
+        df.to_json(save_json_path)
+        df.to_excel(save_excel_path)
+    pass
+
+def save_fig_dir(data_list_with_tag, action, directory, xlabel, ylabel, time):
+    directory += str(time[0]) + '_' + str(time[1]) + 's/'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    for tmp in list(zip(*data_list_with_tag)):
+        name = tmp[0]
+        processed = action(tmp[1])
+        save_2d(processed, name, xlabel, ylabel, directory, time)
+    plt.clf()
+    pass
+
+def load_video_data_dir(directory = LOAD_VIDEO_DIR):
+    ret = {}
+    for file in glob.glob(directory + "*" + EXT_JSON):
+        ret[os.path.splitext(os.path.basename(file))[0]] = load_file(file)
+    return ret
+
+############################################ obselete ##############################################
 
 # optflow_dist_list = prevideo.opt_flow_prob_from_dir(prevideo.LOAD_DIR)
 # motion_prob_dist_list = load_motion_data_dir(is_compact = True)
 
 # motion_cumul_dist_list = load_motion_data_dir(is_cumulative = True, is_compact = True)
 # kld_prob_list = apply_on_dir(optflow_dist_list, motion_prob_dist_list,
-                             # kullback_leibler_divergence,
+                             # _kullback_leibler_divergence,
                              # lambda x, y: (x, y))
 # kld_cumul_list = apply_on_dir(optflow_dist_list, motion_cumul_dist_list,
-                              # kullback_leibler_divergence,
+                              # _kullback_leibler_divergence,
                               # lambda x, y: (x, y))
 
 
