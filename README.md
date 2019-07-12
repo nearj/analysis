@@ -40,9 +40,9 @@ project
 
 - procedure abstraction
 
-[Raw data of Motion of Platform(**MoP**) which is sampled as 3hz >> making lookup-table by scanning all motion in simulation(a video) at frames >> at a frame take probability of the frame's probability with the maked lookup table >> save probability as json; **Motion Probability** as *json*],  
-[Raw data of optical flow which is sampled as 3hz >> polarization all optical flow >> making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames >> at a frame take probability of the pixel's probability with the maked lookup table  **Optical Probability** in *memory*]  
-[With **Motion Probability** as *json* and **Optical Probability** in *memory* >> make KLD at a frame and entropy of optical flow at a frame >> save it as figure(.jpg)]
+1. Raw data of Motion of Platform(**MoP**) which is sampled as 3hz >> making lookup-table by scanning all motion in simulation(a video) at frames >> at a frame take probability of the frame's probability with the maked lookup table >> save probability as json; **Motion Probability** as *json*,  
+2. Raw data of optical flow which is sampled as 3hz >> polarization all optical flow >> making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames >> at a frame take probability of the pixel's probability with the maked lookup table  **Optical Probability** in *memory*,  
+3. With **Motion Probability** as *json* and **Optical Probability** in *memory* >> make KLD at a frame and entropy of optical flow at a frame >> save it as figure(.jpg)
 
 
 - preprocess_motion.py  
