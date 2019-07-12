@@ -37,6 +37,14 @@ project
 ```
 
 ## Explanation
+
+- procedure abstraction
+
+[Raw data of Motion of Platform(**MoP**) which is sampled as 3hz >> making lookup-table by scanning all motion in simulation(a video) at frames >> at a frame take probability of the frame's probability with the maked lookup table >> save probability as json; **Motion Probability** as *json*],  
+[Raw data of optical flow which is sampled as 3hz >> polarization all optical flow >> making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames >> at a frame take probability of the pixel's probability with the maked lookup table  **Optical Probability** in *memory*]  
+[With **Motion Probability** as *json* and **Optical Probability** in *memory* >> make KLD at a frame and entropy of optical flow at a frame >> save it as figure(.jpg)]
+
+
 - preprocess_motion.py  
 
 Subsampling(3hz) raw motion data of txt file to probability of all motion vector in experiment as json and excel file
@@ -55,7 +63,7 @@ To analysis when VR sickness at simulation, it visualize optical flow of video a
 
 
 ## Usage example
-- process raw data of motion of platform(MoP) to probability density
+- process raw data of motion of platform to probability density
 ```sh
 python preprocecess_motion.py -use_default
 ```
