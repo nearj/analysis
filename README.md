@@ -1,4 +1,4 @@
-# Motion Sickness Quantification
+# Motion Platfrom Virtual Reality(MPVR) Motion Filtering
 > ETRI SW콘텐츠연구소 차세대콘텐츠연구본부 및 서울시립대 연구과제
 
 모션 플랫폼에서 발생하는 VR멀미 정량화 및 저감 연구
@@ -14,18 +14,25 @@ pip install -r requirements.txt
 ```
 project
 │   README.md
-│   preprocess_video.py
-|   preprocess_motion.py
-|   processing.py
-|   make_video_with_SSQ.py
+│   configure.py
+|   threedi.py
 |   CalQ.cs
 |   PlayMenu.cs
+|───mpvr
+│   |───datamanager
+│   |   |─datamanager.py
+│   |   |─threedi.py
+│   |   |─UOS2018.py
+│   |───process
+│   |   |─process.py
+│   └───etc
+│       |─ssq.py
 |
 |───data
 │   |───raw
 │   |   |─motion < from unity synchronized with video, 3hz sample rate
 │   |   |─video < from unity synchronized with motion, 3hz sample rate
-│   |───preprocessed 
+│   |───preprocessed
 │   |   |─motion < preprocess_motion.py; probability of motion in simulation level
 │   └───processed
 │       |─video < make_video_with_SSQ.py; highlight SSQ and optical flows
@@ -33,26 +40,29 @@ project
 │       |─graph < processing.py < preprocess_video.py
 │───old
 |───test
-
 ```
 
 ## Explanation
 
-- procedure abstraction
+### Procedure Abstraction
 
-1. Raw data of Motion of Platform(**MoP**) which is sampled as 3hz
-> making lookup-table by scanning all motion in simulation(a video) at frames   
-> At a frame take probability of the frame's probability with the maked lookup table  
-> Save probability as json; **Motion Probability** as *json*,  
-2. Raw data of optical flow which is sampled as 3hz  
-> Polarization all optical flow  
-> Making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames(pixels in frame\*frames in simulation; E.g. 1024\*768\*60 at 20s simulation)  
-> At a frame take probability of the pixel's probability with the maked lookup table  **Optical Probability** in *memory*,  
-3. With **Motion Probability** as *json* and **Optical Probability** in *memory*  
-> Make KLD at a frame and entropy of optical flow at a frame  
-> Save it as figure(.jpg)
+1. subsampling Motion of Platform(**MoP**)  
+   Raw data of MoP which is sampled as 3hz  
+&#8594;   Making lookup-table by scanning all motion in simulation(a video; E.g. probably there are 2 MoP in S1_pitch, up and down)   
+&#8594;   At frame level, take probability of the frame's probability with the lookup table  
+&#8594;   Save probability as json; **Motion Probability** as *json*,  
+2. Subsampling optical flow  
+   Raw data of optical flow which is sampled as 3hz  
+&#8594;   Polarization all optical flow  
+&#8594;   Making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames(pixels in frame\*frames in simulation; E.g. 1024\*768\*60 at 20s simulation)  
+&#8594;   At frame level, take probability of the polarized pixel's optical flow with the lookup table  
+&#8594;   Store **Optical Probability** in *memory*.
+3. Calculate KLD and entropy of optical flow   
+   With **Motion Probability** as *json* and **Optical Probability** in *memory*  
+&#8594;   Make KLD at a frame and entropy of optical flow at a frame  
+&#8594;   Save it as figure(.jpg)
 
-------
+### Project Files
 
 - preprocess_motion.py  
 
@@ -82,10 +92,7 @@ python preprocecess_motion.py
 
 - process raw data of video and preprocessed MoP to KLD and Entropy of Optical Flow
 ```sh
-main(1) // S4 ~ S6
-main(2) // heave motion on S1~S3
-main(0) // else
-in python
+python processing.py
 ```
 
 ## TO-DO:
