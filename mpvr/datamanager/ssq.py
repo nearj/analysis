@@ -1,6 +1,7 @@
 # coding: utf-8
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 SSQ = { 'S1_pitch': [6, 18], 'S1_yaw': [10], 'S1_roll':[9],
         'S1_surge': [9], 'S1_heave': [], 'S1_sway': [7, 14],
@@ -41,5 +42,15 @@ save_path = './data/raw/ssq/'
 
 for key in base.keys():
     df = pd.DataFrame(base[key])
-    df.to_json(save_path + key + '.json')
-    
+    df.to_csv(save_path + key + '.csv')
+
+for key in SSQ.keys():
+    df = pd.read_csv(save_path + key + '.csv')
+    plt.clf()
+    plt.bar(df.index.values, df['0'].values, align='center')
+    plt.xticks(df.index.values[::2], fontsize = 6)
+    plt.yticks(np.arange(0,7))
+    plt.xlabel('second')
+    plt.ylabel('SSQ value')
+
+    plt.savefig(save_path + key + '.png', dpi=300, bbox_inches = "tight")

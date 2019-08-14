@@ -1,4 +1,16 @@
 class Config:
+    """ Configure for MPVR experiment.
+    :var DATA_MANAGER: defualt raw data manager configure.
+    :type DATA_MANAGER: dict
+    :var THREEDI: stands for 3DI data set
+    :type THREEDI: dict
+    :var UOS2018: stands for university of seoul data set at 2018
+    :type UOS2018: dict
+
+    """
+    ###########################################################################
+    #                               DATA MANAGER                              #
+    ###########################################################################
     DATA_MANAGER = \
     {
         'LOAD_MOTION_DIR': './data/raw/motion/',
@@ -36,57 +48,9 @@ class Config:
         'AXIS': ['pitch', 'yaw', 'roll', 'surge', 'heave', 'sway']
     }
 
-    DEFAULT = \
-    {
-        'scenarios':
-        {
-            'S1_pitch': 1200,
-            'S1_yaw': 1200,
-            'S1_roll': 1200,
-            'S1_surge': 1200,
-            'S1_heave': 600,
-            'S1_sway': 1200,
-            'S2_pitch': 1200,
-            'S2_yaw': 1200,
-            'S2_roll': 1200,
-            'S2_surge': 1200,
-            'S2_heave': 600,
-            'S2_sway': 1200,
-            'S3_pitch': 1200,
-            'S3_yaw': 1200,
-            'S3_roll': 1200,
-            'S3_surge': 1200,
-            'S3_heave': 600,
-            'S3_sway': 1200,
-            'S4': 3600,
-            'S5': 3600,
-            'S6': 3600
-        },
-        'motion':
-        {
-            'extension': '.txt',
-            'sensored':
-            {
-                'pitch': 'pitch',
-                'yaw': 'yaw',
-                'roll': 'roll',
-                'heave': 'heave'
-            },
-            'sampling_rate': 3 # hz
-        },
-        'video':
-        {
-            'extension': '.mp4',
-            'resolution':
-            {
-                'width': 1024,
-                'height': 768
-            },
-            'fps': 25,
-            'time': 105.40 # 1m 45.40 sec
-
-        }
-    }
+    ###########################################################################
+    #                                   3DI                                   #
+    ###########################################################################
     THREEDI = \
     {
         'scenarios':
@@ -121,5 +85,513 @@ class Config:
             'end_index': 2636,
             'step_min': 0.30,
             'step_max': 0.36
+        }
+    }
+
+    ###########################################################################
+    #                                 UOS2018                                 #
+    ###########################################################################
+    UOS2018 = \
+    {
+        'scenarios':
+        {
+            'S1_pitch':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'pitch'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                }
+            },
+            'S1_yaw':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'yaw'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                }
+            },
+            'S1_roll':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'roll'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                }
+            },
+            'S1_surge':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                }
+            },
+            'S1_heave':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'heave'
+                    ],
+                    'time': 10,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 10,
+                    'fps': 60
+                },
+            },
+            'S1_sway':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                }
+            },
+            'S2_pitch':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'pitch'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S2_yaw':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'yaw'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                }
+            },
+            'S2_roll':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'roll'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S2_surge':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S2_heave':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'heave'
+                    ],
+                    'time': 10,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 10,
+                    'fps': 60
+                },
+            },
+            'S2_sway':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S3_pitch':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'pitch'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S3_yaw':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'yaw'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S3_roll':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'roll'
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S3_surge':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S3_heave':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'heave'
+                    ],
+                    'time': 10,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 10,
+                    'fps': 60
+                },
+            },
+            'S3_sway':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                    ],
+                    'time': 20,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 20,
+                    'fps': 60
+                },
+            },
+            'S4':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'pitch, surge'
+                    ],
+                    'time': 60,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 60,
+                    'fps': 60
+                },
+            },
+            'S5':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'yaw', 'roll', 'surge'
+                    ],
+                    'time': 60,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 60,
+                    'fps': 60
+                },
+            },
+            'S6':
+            {
+                'motion':
+                {
+                    'extension': '.txt',
+                    'sensored':
+                    [
+                        'pitch', 'yaw', 'roll', 'surge'
+                    ],
+                    'time': 60,
+                    'sampling_rate': 3 #hz
+                },
+                'video':
+                {
+                    'extension': '.mp4',
+                    'resolution':
+                    {
+                        'width': 1024,
+                        'height': 768
+                    },
+                    'time': 60,
+                    'fps': 60
+                },
+            },
         }
     }

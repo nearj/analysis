@@ -1,5 +1,0 @@
-video
-time: 1m 45.40s
-fps: ~25fps
-res: 352*240
-
