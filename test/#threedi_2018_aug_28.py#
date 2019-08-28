@@ -41,9 +41,29 @@ for scenario in dm.get_scenarios():
         hist /= np.sum(hist)
 
     mot_vis_gen = dm.make_tuple_gen(
-         dm.get_classified_motion_data_gen(filtered_motion_data),
+         dm.get_classified_motion_data_gen(motion_data),
          dm.get_classified_visual_data_gen())
     mapped = mapping_src_to_histogram(mot_vis_gen, histograms)
     mpe = [x for x in to_mp_entropy(mapped)]
     dm._load_timestamp_data()
     dm.save_scenario_as_table(mpe, 'mpe')
+
+mpe = np.zeros(315)
+incidence = np.zeros(315)
+for scenario in dm.get_scenarios():
+    print(scenario)
+    dm.set_scenario(scenario)
+    mpe += dm.get_processed_data('mpe')['MPEntropy'].values
+    incidence += dm.get_incidence_data()
+
+times = dm.get_timestamp_data()[0]
+fig, axes = dm.fig_setup(2, ['MP Entropy', 'Incidence'], np.arange(0, 108, 2), times = times)
+
+
+_vectors = []
+
+for scenario in dm.get_scenarios():
+    print(scenario)
+    dm.set_scenario(scenario)
+    _vectors.append(np.amin(np.array([x for x in dm.get_motion_data_gen()]), axis=0))
+    _vectors.append(np.amax(np.array([x for x in dm.get_motion_data_gen()]), axis=0))

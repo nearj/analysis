@@ -134,16 +134,19 @@ class Manager:
         self._check_and_load(['timestamp'])
         return self._times, self._timediffs, self._indices
 
-    def get_processed_data(self, tag):
-        self.load_processed_data(tag)
-        return self._processed_data
+    def get_processed_data(self, tag, path=None, remark_dir=''):
+        tags = self._tags
+        if path is None:
+            path = self._setting.save_result_path + tags[tag]['dir'] + tags['tbl']['dir'] \
+                + remark_dir + self._scenario + tags['tbl']['ext']
+        df = pd.read_csv(path, encoding="ISO-8859-1")
+        return df
 
     ###############################################################################################
-    #                                        get functions                                        #
+    #                                        set functions                                        #
     ###############################################################################################
     def set_paths(self, motion_src_path, video_src_path):
         pass
-
 
     ###############################################################################################
     #                                        load functions                                       #
@@ -152,19 +155,10 @@ class Manager:
         self._load_incidence_data()
         self._load_timestamp_data()
 
-    def load_processed_data(self, tag, remark_dir = '', file_name=''):
-        tags = self._tags
-        if len(file_name) == 0:
-            file_name = self._scenario
-        path = self._setting.save_result_path + tags[tag]['dir'] + tags['tbl']['dir'] \
-            + remark_dir + file_name + tags['tbl']['ext']
-        df = pd.read_csv(path)
-        self._processed_data = df[tags[tag]['title']].values
-
     def _load_incidence_data(self):
         self._load_state['incidence'] = True
         df = pd.read_csv(self._setting.incidence_data_path, encoding="ISO-8859-1")
-        self._incidence = df[self._setting.tags['incidence']['title']].values[1:]
+        self._incidence = df[self._tags['incidence']['title']].values[1:]
 
     def _load_timestamp_data(self):
         self._load_state['timestamp'] = True
@@ -215,12 +209,11 @@ class Manager:
 
         return fig_preset.fig_setup(times, row, ylabels, xticks, ylims, width, height)
 
-    def fig_finalize(self, tag, remark_dir = '', file_name = ''):
+    def fig_finalize(self, tag, remark_dir='', path=None):
         tags = self._tags
-        if len(file_name) == 0:
-            file_name = self._scenario
-        path = self._setting.save_result_path + tags[tag]['dir'] + tags['grp']['dir'] \
-            + remark_dir + file_name + tags['grp']['ext']
+        if path is None:
+            path = self._setting.save_result_path + tags[tag]['dir'] + tags['grp']['dir'] \
+                + remark_dir + self._scenario + tags['grp']['ext']
         fig_preset.fig_finalize(path)
 
     def ax_color_by_value(self, ax, time, data, y_value=0):

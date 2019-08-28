@@ -48,7 +48,7 @@ def classification_motion(motion_vector, bins = None):
     return _classification_motion_helper(motion_vector, bins)
 
 def make_bins(motion_data_gen, seperator):
-    max_values = np.max(np.abs([mv for mv in motion_data_gen]), axis = 0)
+    max_values = [4.82269504, 0, 3.4228557, 0, 0, 0]
     return np.array([np.array(seperator) * m for m in max_values])
 
 def classification_visual(polars):
