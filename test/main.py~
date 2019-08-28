@@ -1,0 +1,20 @@
+from mpvr.datamodule.manager import Manager as dm
+from mpvr.utils.process import *
+from scipy.signal import savgol_filter
+import numpy as np
+import pandas as pd
+import argparse
+
+dm = dm.from_config(dm.section_list()[0])
+
+
+def main(args):
+    pass
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-m', '--motion_path')
+    parser.add_argument('-v', '--video_path')
+    parser.add_argument('-o', '--output_path')
+    args = parser.parse_args()
+    main(args)

@@ -1,0 +1,16 @@
+from mpvr.datamodule.manager import Manager as dm
+from mpvr.utils.process import *
+from scipy.signal import savgol_filter
+import numpy as np
+import pandas as pd
+
+dm = dm.from_config(dm.section_list()[0])
+
+dm.set_scenario('3DI_01')
+motion_data = [x for x in dm.get_motion_data_gen()]
+filtered_motion_data = savgol_filter(motion_data, 3, 2)
+
+
+for scenario in dm.get_scenarios():
+    print(scenario)
+    dm.set_scenario(scenario)

@@ -9,7 +9,7 @@ def main():
         print(scenario)
         dm.set_scenario(scenario)
         """MP Entropy to csv"""
-        # histograms = make_histogram(dm.load(), (5**6, 36))
+        # histograms = make_histogram(dm.get_motion_visual_tuple(), (5**6, 36))
         # mpe = [x for x in to_mp_entropy(mapping_src_to_histogram(dm.load(), histograms))]
         # entropy = [x for x in to_entropy(
         #     [x[1] for x in mapping_src_to_histogram(dm.load(), histograms)])]

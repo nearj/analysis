@@ -50,7 +50,6 @@ class Config:
         self.incidence_data_path = incidence_data_path
         self.timestamp_path = timestamp_path
         self.save_result_path = save_result_path
-        self.tags = TAGS
         self.target_sampling_rate = target_sampling_rate
 
     @staticmethod
@@ -61,9 +60,14 @@ class Config:
     def get_section_scenarios(section):
         return globals()[section]['scenarios']
 
+    @staticmethod
+    def get_tags():
+        return TAGS
+
     @classmethod
     def get_config(cls, section, scenario_name):
         return getattr(cls, str.lower(section))(scenario_name)
+
 
     @classmethod
     def threedi_2018(cls, scenario_name):

@@ -9,6 +9,7 @@ class Manager:
     def __init__(self, *args, **kwargs):
         self.conf = kwargs.get('conf')
         self._section = kwargs.get('section')
+        self._tags = self.conf.get_tags()
         self._load_state = {'scenario': False,
                             'incidence': False,
                             'timestamp': False}
@@ -46,49 +47,83 @@ class Manager:
     ###############################################################################################
     #                                        get functions                                        #
     ###############################################################################################
-    def get_motion_data_gen(self):
-        self._check_and_load(['timestamp'])
-        path = self._setting.motion_data.path
-        axes = self._setting.motion_data.axes
-        sensored_axes_tag = self._setting.motion_data.sensored_axes_tag
-        target_sampling_rate = self._setting.target_sampling_rate
+    def get_motion_data_gen(self,
+                            path=None,
+                            timediffs=None,
+                            indices=None,
+                            axes = None,
+                            sensored_axes_tag=None,
+                            target_sampling_rate=None):
+        if timediffs is None:
+            self._check_and_load(['timestamp'])
+            indices = self._indices
+            timediffs = self._timediffs
+        if path is None:
+            path = self._setting.motion_data.path
+        if axes is None:
+            axes = self._setting.motion_data.axes
+        if sensored_axes_tag is None:
+            sensored_axes_tag = self._setting.motion_data.sensored_axes_tag
+        if target_sampling_rate is None:
+            target_sampling_rate = self._setting.target_sampling_rate
         return self._preprocess.load_motion_gen(path,
                                                 axes,
                                                 sensored_axes_tag,
                                                 target_sampling_rate,
-                                                self._indices,
-                                                self._timediffs)
+                                                indices,
+                                                timediffs)
 
-    def get_classified_motion_data_gen(self):
-        gen = self.get_motion_data_gen
-        if self._setting.motion_data.is_classified:
-            for motion_vector in gen():
+    def get_classified_motion_data_gen(self, gen=None, is_classified=None, seperator=None):
+        if gen is None:
+            gen = self.get_motion_data_gen()
+
+        if is_classified is None:
+            is_classified = self._setting.motion_data.is_classified
+
+        if seperator is None:
+            seperator = self._setting.motion_data.motion_seperator
+
+        if is_classified:
+            for motion_vector in gen:
                 yield self._preprocess.classification_motion(motion_vector)
         else:
-            bins = self._preprocess.make_bins(gen(), self._setting.motion_data.motion_seperator)
-            for motion_vector in gen():
+            motion_data = [x for x in gen]
+            bins = self._preprocess.make_bins(motion_data, seperator)
+            for motion_vector in motion_data:
                 yield self._preprocess.classification_motion(motion_vector, bins)
 
 
-    def get_visual_data_gen(self):
-        self._check_and_load(['timestamp'])
-        path = self._setting.video_data.path
-        extension = self._setting.video_data.extension
-        target_sampling_rate = self._setting.target_sampling_rate
+    def get_visual_data_gen(self,
+                            path=None,
+                            indices=None,
+                            timediffs=None,
+                            extension=None,
+                            target_sampling_rate=None):
+        if timediffs is None:
+            self._check_and_load(['timestamp'])
+            indices = self._indices
+            timediffs = self._timediffs
+        if path is None:
+            path = self._setting.video_data.path
+        if extension is None:
+            extension = self._setting.video_data.extension
+        if target_sampling_rate is None:
+            target_sampling_rate = self._setting.target_sampling_rate
         return self._preprocess \
                    .load_visual_gen(path,
                                     target_sampling_rate,
                                     extension,
-                                    self._indices,
-                                    self._timediffs)
+                                    indices,
+                                    timediffs)
 
-    def get_classified_visual_data_gen(self):
-        for polars in self.get_visual_data_gen():
+    def get_classified_visual_data_gen(self, gen=None):
+        if gen is None:
+            gen = self.get_visual_data_gen()
+        for polars in gen:
             yield self._preprocess.classification_visual(polars)
 
-    def get_motion_visual_tuple_gen(self):
-        seperator = self._setting.motion_data.motion_seperator
-        for d in zip(*(self.get_classified_motion_data_gen(), self.get_classified_visual_data_gen())):
+    def make_tuple_gen(self, gen1, gen2):
+        for d in zip(*(gen1, gen2)):
             yield d
 
     def get_incidence_data(self):
@@ -103,6 +138,12 @@ class Manager:
         self.load_processed_data(tag)
         return self._processed_data
 
+    ###############################################################################################
+    #                                        get functions                                        #
+    ###############################################################################################
+    def set_paths(self, motion_src_path, video_src_path):
+        pass
+
 
     ###############################################################################################
     #                                        load functions                                       #
@@ -112,7 +153,7 @@ class Manager:
         self._load_timestamp_data()
 
     def load_processed_data(self, tag, remark_dir = '', file_name=''):
-        tags = self._setting.tags
+        tags = self._tags
         if len(file_name) == 0:
             file_name = self._scenario
         path = self._setting.save_result_path + tags[tag]['dir'] + tags['tbl']['dir'] \
@@ -128,7 +169,7 @@ class Manager:
     def _load_timestamp_data(self):
         self._load_state['timestamp'] = True
         df = pd.read_csv(self._setting.timestamp_path, encoding="ISO-8859-1")
-        tags = self._setting.tags
+        tags = self._tags
         self._times     = df[tags['time']['title']].values
         self._timediffs = df[tags['timediff']['title']].values
         self._indices   = df[tags['index']['title']].values.astype(int)
@@ -137,7 +178,7 @@ class Manager:
     #                                        save functions                                       #
     ###############################################################################################
     def save_scenario_as_table(self, data, tag, remark_dir = '', file_name = None):
-        tags = self._setting.tags
+        tags = self._tags
         self._check_and_load(['timestamp'])
         if tag not in tags.keys():
             raise Exception('unsupported tag')
@@ -156,7 +197,7 @@ class Manager:
         if len(file_name) == 0:
             file_name = self._section
 
-        tags = self._setting.tags
+        tags = self._tags
         path = self._setting.save_result_path + tags[tag]['dir'] + tags['tbl']['dir']  + remark_dir \
             + file_name + tags['tbl']['ext']
 
@@ -168,11 +209,14 @@ class Manager:
             df.columns = columns
         df.to_csv(path)
 
-    def fig_setup(self, row, ylabels, xticks=None, ylims=None, width=18, height=6):
-        return fig_preset.fig_setup(self._times, row, ylabels, xticks, ylims, width, height)
+    def fig_setup(self, row, ylabels, xticks=None, ylims=None, width=18, height=6, times = None):
+        if times is None:
+            times = self._times
+
+        return fig_preset.fig_setup(times, row, ylabels, xticks, ylims, width, height)
 
     def fig_finalize(self, tag, remark_dir = '', file_name = ''):
-        tags = self._setting.tags
+        tags = self._tags
         if len(file_name) == 0:
             file_name = self._scenario
         path = self._setting.save_result_path + tags[tag]['dir'] + tags['grp']['dir'] \
@@ -186,7 +230,7 @@ class Manager:
     #                                             misc                                            #
     ###############################################################################################
     def extract_timestamp_by_step(self, step_size, start_ind):
-        tags = self._setting.tags
+        tags = self._tags
         df = pd.read_csv(self._setting.motion_data.path, encoding="ISO-8859-1")
         times = df[tags['time']['title']]
         times -= times[start_ind]
@@ -208,9 +252,11 @@ class Manager:
 
     def extract_timestamp_by_grid(self, start_ind,
                                   start_time, end_time,
-                                  target_sampling_rate, error=0.061):
-        tags = self._setting.tags
-        df = pd.read_csv(self._setting.motion_data.path, encoding="ISO-8859-1")
+                                  target_sampling_rate, error=0.061, path = None):
+        if path is None:
+            path = self._setting.motion_data.path
+        tags = self._tags
+        df = pd.read_csv(path, encoding="ISO-8859-1")
         times = pd.to_datetime(df[tags['time']['title']].str.split().str[1]).astype(np.int64) \
             / 10**6
         times -= times[start_ind]
@@ -234,21 +280,25 @@ class Manager:
                 grid_idx += 1
                 if grid_idx >= target_sampling_rate * end_time + 1:
                     break
-        df = pd.DataFrame(np.array([ret_times, ret_timediffs, ret_indices]).T)
+        return ret_times, ret_timediffs, ret_indices
+
+    def save_timestamps(self, times, timediffs, indices, path=None):
+        if path is None:
+            path = self._setting.timestamp_path
+        df = pd.DataFrame(np.array([times, timediffs, indices]).T)
         df[2] = df[2].astype(int)
         df.columns = [tags['time']['title'], tags['timediff']['title'], tags['index']['title']]
-        df.to_csv(self._setting.timestamp_path, float_format='%0.6f')
+        df.to_csv(path, float_format='%0.6f')
 
-    def extract_incidence(self, src, incidence_col_name):
-        if not self._is_state_loaded('timestamp'):
-            self._load_timestamp_data()
+    def extract_incidence(self, incidence_col_name, indices, path=None):
+        if path is None:
+            path = self._setting.motion_data.path
+        tags = self._tags
+        raw = pd.read_csv(path, encoding="ISO-8859-1")[incidence_col_name].values
 
-        tags = self._setting.tags
-        raw = pd.read_csv(src, encoding="ISO-8859-1")[incidence_col_name].values
-
-        i = self._indices[0]
-        sampled = [raw[i]]
-        for j in self._indices[1:]:
+        i = indices[0]
+        sampled = [0]
+        for j in indices[1:-1]:
             sampled.append(np.sum(raw[i:j]))
             i = j
 
@@ -263,7 +313,12 @@ class Manager:
         #     i = j
 
         # sampled.append(np.sum(raw[mid:j]))
-        df = pd.DataFrame(np.array([self._times, sampled])).T
+        return sampled
+
+    def save_incidence(self, times, incidence, path=None):
+        if path is None:
+            path = self._setting.incidence_data_path
+        df = pd.DataFrame(np.array([times, incidence])).T
         df.columns = [tags['time']['title'], tags['incidence']['title']]
         df[tags['incidence']['title']] = df[tags['incidence']['title']].astype(int)
-        df.to_csv(self._setting.incidence_data_path)
+        df.to_csv(path)

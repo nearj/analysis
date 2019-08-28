@@ -52,7 +52,7 @@ def make_bins(motion_data_gen, seperator):
     return np.array([np.array(seperator) * m for m in max_values])
 
 def classification_visual(polars):
-     return np.array(_classification_visual_helper(polars), dtype=int)
+    return np.array(_classification_visual_helper(polars), dtype=int)
 
 @jit(nopython = True)
 def _classification_motion_helper(motion_vector, bins):
@@ -80,40 +80,39 @@ def _classification_visual_helper(polars):
     for i in range(len(polars)):
         mag = polars[i,0]
         deg = polars[i,1]
-        if mag < 6:
-            if deg < 195:
-                if deg < 105:
-                    if deg < 45:
-                        if deg > 15:
-                            ret[i] = 1
-                    else:
-                        if deg < 75:
-                            ret[i] = 2
-                        else:
-                            ret[i] = 3
+        if deg < 195:
+            if deg < 105:
+                if deg < 45:
+                    if deg > 15:
+                        ret[i] = 1
                 else:
-                    if deg < 165:
-                        if deg < 135:
-                            ret[i] = 4
-                        else:
-                            ret[i] = 5
+                    if deg < 75:
+                        ret[i] = 2
                     else:
-                        ret[i] = 6
+                        ret[i] = 3
             else:
-                if deg < 315:
-                    if deg < 255:
-                        if deg < 225:
-                            ret[i] = 7
-                        else:
-                            ret[i] = 8
+                if deg < 165:
+                    if deg < 135:
+                        ret[i] = 4
                     else:
-                        if deg < 285:
-                            ret[i] = 9
-                        else:
-                            ret[i] = 10
+                        ret[i] = 5
                 else:
-                    if deg < 345:
-                        ret[i] = 11
+                    ret[i] = 6
+        else:
+            if deg < 315:
+                if deg < 255:
+                    if deg < 225:
+                        ret[i] = 7
+                    else:
+                        ret[i] = 8
+                else:
+                    if deg < 285:
+                        ret[i] = 9
+                    else:
+                        ret[i] = 10
+            else:
+                if deg < 345:
+                    ret[i] = 11
         if mag < 20:
             if mag > 6:
                 ret[i] += 12

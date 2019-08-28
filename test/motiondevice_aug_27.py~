@@ -1,0 +1,23 @@
+from mpvr.datamodule.manager import Manager as dm
+from mpvr.utils.process import *
+import numpy as np
+import pandas as pd
+dm = dm.from_config(dm.section_list()[1])
+
+S1 = [x for x in dm.get_scenarios() if 'S1' in x]
+histograms = [np.zeros(5**6), np.zeros(36)]
+for scenario in S1:
+    print(scenario)
+    dm.set_scenario(scenario)
+    make_histogram(dm.get_motion_visual_tuple_gen()), histograms)
+
+for scenario in S1:
+    print(scenario)
+    if scenario in ['S1_surge', 'S1_sway', 'S2_surge', 'S2_sway', 'S3_surge', 'S3_sway', 'S4', 'S5', 'S6']:
+        mpe.append([x for x in
+                    to_mp_entropy(
+                        mapping_src_to_histogram(dm.get_motion_data_gen(), histograms, factor = 0.1))])
+    else:
+        mpe.append([x for x in
+                    to_mp_entropy(
+                        mapping_src_to_histogram(dm.get_motion_data_gen(), histograms))])

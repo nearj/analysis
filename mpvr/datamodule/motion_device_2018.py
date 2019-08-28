@@ -22,8 +22,9 @@ def load_visual_gen(path, target_sampling_rate, extension, indices, timediffs):
         cur = next(src)
         flow = cv2.calcOpticalFlowFarneback(prev, cur, None, 0.5, 4, 15, 3, 5, 1.2, 0)
         polars = np.asarray(cv2.cartToPolar(flow[...,0], flow[...,1], None, None, True))
-        polars = polars.reshape(2, polars.shape[1] * polars.shape[2]).T / t \
-            / target_sampling_rate
+        polars = polars.reshape(2, polars.shape[1] * polars.shape[2]).T
+        # polars = polars.reshape(2, polars.shape[1] * polars.shape[2]).T / t \
+            # / target_sampling_rate
         prev = cur
         yield polars
 
@@ -31,8 +32,8 @@ def _visual_src_maker(path, indices, extension):
     if extension == '.mp4':
         cap = cv2.VideoCapture(path)
         max_frame = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-        for i in range(indices[0], int(max_frame)):
-            if i in indices:
+        for i in range(int(max_frame)):
+            if i % 20 == 0:
                 yield cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2GRAY)
             else:
                 cap.read()
@@ -58,12 +59,12 @@ def _classification_motion_helper(motion_vector):
             ret += 2 * modifier
         elif axis_class == 1:   # medium positive motion
             ret += 3 * modifier
-        elif axis_class == 2:   # medium negative motion
+        elif axis_class == -1:   # medium negative motion
             ret += 1 * modifier
-        elif axis_class == 3:   # high positive motion
+        elif axis_class == 2:   # high positive motion
             ret += 4 * modifier
         else:                   # high negative motion
-            ret += 0
+            ret += -2
         modifier *= 5
     return np.array(ret)
 
@@ -73,40 +74,39 @@ def _classification_visual_helper(polars):
     for i in range(len(polars)):
         mag = polars[i,0]
         deg = polars[i,1]
-        if mag < 6:
-            if deg < 195:
-                if deg < 105:
-                    if deg < 45:
-                        if deg > 15:
-                            ret[i] = 1
-                    else:
-                        if deg < 75:
-                            ret[i] = 2
-                        else:
-                            ret[i] = 3
+        if deg < 195:
+            if deg < 105:
+                if deg < 45:
+                    if deg > 15:
+                        ret[i] = 1
                 else:
-                    if deg < 165:
-                        if deg < 135:
-                            ret[i] = 4
-                        else:
-                            ret[i] = 5
+                    if deg < 75:
+                        ret[i] = 2
                     else:
-                        ret[i] = 6
+                        ret[i] = 3
             else:
-                if deg < 315:
-                    if deg < 255:
-                        if deg < 225:
-                            ret[i] = 7
-                        else:
-                            ret[i] = 8
+                if deg < 165:
+                    if deg < 135:
+                        ret[i] = 4
                     else:
-                        if deg < 285:
-                            ret[i] = 9
-                        else:
-                            ret[i] = 10
+                        ret[i] = 5
                 else:
-                    if deg < 345:
-                        ret[i] = 11
+                    ret[i] = 6
+        else:
+            if deg < 315:
+                if deg < 255:
+                    if deg < 225:
+                        ret[i] = 7
+                    else:
+                        ret[i] = 8
+                else:
+                    if deg < 285:
+                        ret[i] = 9
+                    else:
+                        ret[i] = 10
+            else:
+                if deg < 345:
+                    ret[i] = 11
         if mag < 20:
             if mag > 6:
                 ret[i] += 12
