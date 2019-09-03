@@ -14,16 +14,16 @@ pip install -r requirements.txt
 ```
 project
 │   README.md
-│   configure.py
-|   threedi.py
-|   CalQ.cs
-|   PlayMenu.cs
+│   main.py
+|   test.csv
 |───mpvr
-│   |───datamanager
-│   |   |─datamanager.py
-│   |   |─threedi.py
-│   |   |─UOS2018.py
-│   |───process
+│   |───datamodule
+│   |   |─manager.py
+│   |   |─motion_device_2018.py
+│   |   |─threedi_2018.py
+│   |   |─_fig_preset.py
+│   |───utils
+│   |   |─correlation_analysis.py
 │   |   |─process.py
 │   └───etc
 │       |─ssq.py
@@ -32,14 +32,18 @@ project
 │   |───raw
 │   |   |─motion < from unity synchronized with video, 3hz sample rate
 │   |   |─video < from unity synchronized with motion, 3hz sample rate
-│   |───preprocessed
-│   |   |─motion < preprocess_motion.py; probability of motion in simulation level
 │   └───processed
-│       |─video < make_video_with_SSQ.py; highlight SSQ and optical flows
-│       |─table < processing.py; pending currently
-│       |─graph < processing.py < preprocess_video.py
-│───old
-|───test
+│       |───MotionDevice_2018
+│       |   |───incidence
+│       |   |───motion
+│       |   |───timestamp
+│       └───THREEDI_2018
+│           |───incidence
+│           |───motion
+│           └───timestamp
+|───config
+|───csharp
+|───script
 ```
 
 ## Explanation
@@ -64,19 +68,9 @@ project
 
 ### Project Files
 
-- preprocess_motion.py  
+- main.py  
 
-Subsampling(3hz) raw motion data of txt file to probability of all motion vector in experiment as json and excel file
-
-- preprocess_video.py **--FIXME--**  
-
-Subsampling(3hz) raw video, however 1024*768 pixel probability are hard to save as json or other format.For now, it used to import optical flow data in processing.py.
-
-- processing.py **--FIXME--**  
-
-From subsampled data by preprocess_video.py and preprocess_motion.py, this module calculate KLD and Entropy of optical flow and save it as jpg.
-
-- make_video_with_SSQ.py  
+Subsampling(3hz) raw motion data of csv file to probability of all motion vector in experiment as csv file
 
 To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ
 
@@ -85,17 +79,9 @@ To analysis when VR sickness at simulation, it visualize optical flow of video a
 
 
 ## Usage example
-- process raw data of motion of platform to probability density
 ```sh
-python preprocecess_motion.py
-```
-
-- process raw data of video and preprocessed MoP to KLD and Entropy of Optical Flow
-```sh
-python processing.py
+python3 main.py [motion_path] [video_path] [output_path]
 ```
 
 ## TO-DO:
 - [ ] comment project
-- [ ] add calculate probability of optical flow in video at frame level and export data
-- [ ] modulize processing.py
