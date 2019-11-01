@@ -3,6 +3,8 @@ import pandas as pd
 import cv2
 from numba import jit
 
+MAX_VALUES = [4.82269504, 0, 3.4228557, 0, 0, 0] # max speed along axis on 3DI motion platform
+
 def load_motion_gen(path, axes, sensored_axes_tag, target_sampling_rate, indices, timediffs):
     df = pd.read_csv(path, encoding="ISO-8859-1")
     tmp = []
@@ -48,7 +50,7 @@ def classification_motion(motion_vector, bins = None):
     return _classification_motion_helper(motion_vector, bins)
 
 def make_bins(motion_data_gen, seperator):
-    max_values = [4.82269504, 0, 3.4228557, 0, 0, 0]
+    max_values = MAX_VALUES
     return np.array([np.array(seperator) * m for m in max_values])
 
 def classification_visual(polars):

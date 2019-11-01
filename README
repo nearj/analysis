@@ -1,0 +1,27 @@
+acr.py - Absolute Category Rating (ACR) 모듈
+
+# 설치방법
+첨부된 압축파일 해제
+
+# 사용법
+"python3 acr.py mpe_path output_name"
+
+- mpe_path: csv형식의 파일.
+- output_name: 저장하고자 하는 파일의 이름.
+
+# 설명
+모션플랫폼 기반 VR 콘텐츠에서 사용자가 느끼는 주관적인 멀미 정도를 임상적으로 결정된
+category의 분류에 따라 MP Entropy 수치를 1(나쁨 경험)에서 5(좋은 경험)으로
+나누어 주는 모듈.
+
+# output
+- 시간에 따른 ACR을 적용한 MP Entropy에 대한 표
+($project)/output_name.csv
+
+- 시간에 따른 ACR을 적용한 MP Entropy에 대한 그래프
+($project)/output_name.png
+
+
+# dependcies
+PYTHON_VERSION: python 3.7
+LIBRARIES: numba, numpy, pandas, matplotlib, argparse, scipy

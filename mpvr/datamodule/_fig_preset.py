@@ -11,11 +11,11 @@ def fig_setup(time, row, ylabels, xticks, ylims, width, height):
     if row == 1:
         axes.set_xlabel('time')
         axes.set_xlim(time[0], time[-1])
-        axes.set_ylabel(ylabels, fontsize = 18)
+        axes.set_ylabel(ylabels, fontsize = 9)
         axes.grid(axis='x')
-        if xticks:
+        if xticks is not None:
             axes.set_xticks(xticks)
-        if ylims:
+        if ylims is not None:
             axes.set_ylim(_ax[1])
 
     else:
@@ -40,7 +40,7 @@ def fig_finalize(path):
     plt.tight_layout()
     plt.savefig(path)
 
-def ax_color_by_value(ax, time, data, y_value):
+def ax_color_by_value(ax, time, data, y_value, linestyle):
     x = []
     y = []
     for i in range(len(data)-1):
@@ -63,6 +63,8 @@ def ax_color_by_value(ax, time, data, y_value):
 
     lc = LineCollection(segments, cmap=cmap, norm=norm)
     lc.set_array(np.array([1 if t > 0 else -1 for t in y]))
+    if linestyle is not None:
+        lc.set_linestyle(linestyle)
     ax.add_collection(lc)
 
 

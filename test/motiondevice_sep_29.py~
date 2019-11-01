@@ -1,0 +1,37 @@
+from mpvr.datamodule.manager import Manager as dm
+from mpvr.utils.process import *
+from scipy.signal import savgol_filter
+import numpy as np
+import pandas as pd
+
+dm = dm.from_config(dm.section_list()[1])
+max_val = 0
+
+for scenario in dm.get_scenarios():
+    dm.set_scenario(scenario)
+    df = dm.get_processed_data('mpe')
+    mpe = df['MPEntropy'].values
+    if np.max(np.abs(mpe)) > max_val:
+        max_val = np.max(np.abs(mpe))
+
+print(max_val)
+
+for scenario in dm.get_scenarios():
+    print(scenario)
+    dm.set_scenario(scenario)
+
+    df = dm.get_processed_data('mpe')
+    time, mpe = df['Time'].values, df['MPEntropy'].values
+    mos = mean_opinion_score(mpe, grid)
+    incidence = dm.get_incidence_data()
+
+    fig, axes = dm.fig_setup(3, ['MPEntropy', 'MOS', 'Incidence'], np.arange(0, len(time)/3, 2), times = time)
+    axes[0].plot(time, mpe, ':')
+    for y in grid:
+        axes[0].axhline(y, color='r', linestyle=':')
+    axes[1].plot(time, mos)
+    axes[2].bar(time, incidence, width=0.2)
+
+    axes[1].set_yticks(np.arange(1, 6, 1))
+    axes[2].set_yticks(np.arange(0, 5, 1))
+    dm.fig_finalize(tag='mpe', remark_dir='mos/')

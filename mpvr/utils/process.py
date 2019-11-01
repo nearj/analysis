@@ -29,6 +29,23 @@ def correlation(data, incidence):
     k = kendalltau(data, incidence)
     return p.rvalue, p.pvalue, s.correlation, s.pvalue, k.correlation, k.pvalue
 
+def absolute_category_rating(data_src, grid):
+    res = []
+    for i in range(len(data_src)):
+        if data_src[i] < grid[1]:
+            if data_src[i] < grid[0]:
+                res.append(5)
+            else: res.append(4)
+        else:
+            if data_src[i] < grid[3]:
+                if data_src[i] < grid[2]:
+                    res.append(3)
+                else:
+                    res.append(2)
+            else: res.append(1)
+    return res
+
+
 @jit(nopython = True)
 def _make_histogram_helper(histogram, data):
     for elt in data:

@@ -171,7 +171,7 @@ class Manager:
     ###############################################################################################
     #                                        save functions                                       #
     ###############################################################################################
-    def save_scenario_as_table(self, data, tag, remark_dir = '', file_name = None):
+    def save_scenario_as_table(self, data, tag, remark_dir = '', file_name = None, path = None):
         tags = self._tags
         self._check_and_load(['timestamp'])
         if tag not in tags.keys():
@@ -179,8 +179,10 @@ class Manager:
         if not file_name:
             file_name = self._scenario
 
-        path = self._setting.save_result_path + tags[tag]['dir'] + tags['tbl']['dir'] \
-            + remark_dir + file_name + tags['tbl']['ext']
+        if path is None:
+            path = self._setting.save_result_path + tags[tag]['dir'] + tags['tbl']['dir'] \
+                + remark_dir + file_name + tags['tbl']['ext']
+
         df = pd.DataFrame(data)
         df.index = self._times[1:]
         df.index.name = tags['time']['title']
@@ -216,8 +218,8 @@ class Manager:
                 + remark_dir + self._scenario + tags['grp']['ext']
         fig_preset.fig_finalize(path)
 
-    def ax_color_by_value(self, ax, time, data, y_value=0):
-        fig_preset.ax_color_by_value(ax, time, data, y_value)
+    def ax_color_by_value(self, ax, time, data, y_value=0, linestyle=None):
+        fig_preset.ax_color_by_value(ax, time, data, y_value, linestyle)
 
     ###############################################################################################
     #                                             misc                                            #

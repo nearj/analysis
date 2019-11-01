@@ -5,7 +5,7 @@ from numba import jit
 
 def load_motion_gen(path, axes, sensored_axes_tag, target_sampling_rate, indices, timediffs):
     df = pd.read_csv(path, encoding="ISO-8859-1")
-    unsensored_axes = ['surge', 'sway']
+    unsensored_axes = []#['surge', 'sway']
     for i in indices[1:]:
         ret = []
         for ax in axes:

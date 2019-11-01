@@ -1,0 +1,14 @@
+from mpvr.datamodule.manager import Manager as dm
+from mpvr.utils.process import *
+from scipy.signal import savgol_filter
+import numpy as np
+import pandas as pd
+
+dm = dm.from_config(dm.section_list()[1])
+
+for scenario in dm.get_scenarios():
+    dm.set_scenario(scenario)
+    df = dm.get_processed_data('mpe')
+    for x in dm.get_motion_data_gen():
+        print(x)
+    
