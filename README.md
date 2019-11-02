@@ -61,24 +61,28 @@ project
 &#8594;   Making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames(pixels in frame\*frames in simulation; E.g. 1024\*768\*60 at 20s simulation)  
 &#8594;   At frame level, take probability of the polarized pixel's optical flow with the lookup table  
 &#8594;   Store **Optical Probability** in *memory*.
-3. Calculate KLD and entropy of optical flow   
-   With **Motion Probability** as *json* and **Optical Probability** in *memory*  
-&#8594;   Make KLD at a frame and entropy of optical flow at a frame  
-&#8594;   Save it as figure(.jpg)
+3. Calculate MP Entropy and entropy of optical flow   
+   With **Motion Probability** and **Optical Probability**  
+&#8594;   Make MP Entropy at a frame and entropy of optical flow at a frame  
 
 ### Project Files
 
 - main.py  
-
 Subsampling(3hz) raw motion data of csv file to probability of all motion vector in experiment as csv file
 To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ
-
-
-
-###### For search which function currently used in project please see # HERE! in project
 
 
 ## Usage example
 ```sh
 python3 main.py motion_path video_path output_path [--mute_svg] [--mute_acr] [--mute_norm]
 ```
+By default the result of main.py contains normalization on MP Entropy with Absolutely Category Rating(ACR) and savitzky golay filtering (window size 9 and order 2) on motion signal of Motion Platform. It means the values of MP Entropy are categorized by 5 levels, which menas upper level is more comportable for the users. see
+
+options on usage
+### --mute_svg
+mute savitzky golay filtering option
+### --mute_acr
+mute Absolute Category Rating
+### --mute_svg
+mute normalization
+
