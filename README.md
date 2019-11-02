@@ -71,8 +71,8 @@ project
 - main.py  
 
 Subsampling(3hz) raw motion data of csv file to probability of all motion vector in experiment as csv file
-
 To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ
+
 
 
 ###### For search which function currently used in project please see # HERE! in project
@@ -80,8 +80,5 @@ To analysis when VR sickness at simulation, it visualize optical flow of video a
 
 ## Usage example
 ```sh
-python3 main.py [motion_path] [video_path] [output_path]
+python3 main.py motion_path video_path output_path [--mute_svg] [--mute_acr] [--mute_norm]
 ```
-
-## TO-DO:
-- [ ] comment project
