@@ -93,11 +93,11 @@ def main(args):
     mpentropy_handler(args)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("motion_path", type=str)
-    parser.add_argument("visual_path", type=str)
-    parser.add_argument("output_path", type=str)
-    parser.add_argument('--mute_svg', type=bool, nargs='?', const=1, default=0, help='mute savitzky golya filtering')
+    parser = argparse.ArgumentParser(description='Calculate MP Entropy from motion data and video file.')
+    parser.add_argument("motion_path", type=str, help='data of signal of motion platform (csv)')
+    parser.add_argument("visual_path", type=str, help='video file corresponding to motion path (mp4)')
+    parser.add_argument("output_path", type=str, help='the name of output file (csv)')
+    parser.add_argument('--mute_svg', type=bool, nargs='?', const=1, default=0, help='mute savitzky-golay filtering')
     parser.add_argument('--mute_acr', type=bool, nargs='?', const=1, default=0, help='mute absolute category rating')
     parser.add_argument('--mute_norm', type=bool, nargs='?', const=1, default=0, help='mute normalization')
     # parser.add_argument('--make_figure', type=bool, nargs='?', const=0, default=0, help='make figure')
