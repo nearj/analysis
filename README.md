@@ -10,6 +10,22 @@ see requirements.txt
 pip install -r requirements.txt
 ```
 
+## Usage example
+```sh
+python3 main.py motion_file(csv) video_file(mp4) output_file_name(csv) [--mute_svg] [--mute_acr] [--mute_norm]
+```
+main.py calculate take inputs as two file of csv format - motion data file and video file - and makes output_file_name.csv which contains categorized MP Entropy. By default the result of main.py contains normalization on MP Entropy with Absolutely Category Rating(ACR) and savitzky golay filtering (window size 9 and order 2) on motion signal of Motion Platform. It means the values of MP Entropy are categorized by 5 levels, which menas upper level is more comportable for the users. See [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky–Golay_filter) and [Absolute Category Rating](https://en.wikipedia.org/wiki/Absolute_Category_Rating).
+ 
+
+options on usage
+### --mute_svg
+mute savitzky golay filtering option
+### --mute_acr
+mute Absolute Category Rating
+### --mute_svg
+mute normalization
+
+
 ## File Structures
 ```
 project
@@ -72,18 +88,4 @@ Subsampling(3hz) raw motion data of csv file to probability of all motion vector
 To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ
 
 
-## Usage example
-```sh
-python3 main.py motion_file(csv) video_file(mp4) output_file_name(csv) [--mute_svg] [--mute_acr] [--mute_norm]
-```
-main.py calculate take inputs as two file of csv format - motion data file and video file - and makes output_file_name.csv which contains categorized MP Entropy. By default the result of main.py contains normalization on MP Entropy with Absolutely Category Rating(ACR) and savitzky golay filtering (window size 9 and order 2) on motion signal of Motion Platform. It means the values of MP Entropy are categorized by 5 levels, which menas upper level is more comportable for the users. See [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky–Golay_filter) and [Absolute Category Rating](https://en.wikipedia.org/wiki/Absolute_Category_Rating).
- 
-
-options on usage
-### --mute_svg
-mute savitzky golay filtering option
-### --mute_acr
-mute Absolute Category Rating
-### --mute_svg
-mute normalization
 
