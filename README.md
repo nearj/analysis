@@ -70,22 +70,13 @@ project
    Raw data of MoP which is sampled as 3hz  
 &#8594;   Making lookup-table by scanning all motion in simulation(a video; E.g. probably there are 2 MoP in S1_pitch, up and down)   
 &#8594;   At frame level, take probability of the frame's probability with the lookup table  
-&#8594;   Save probability as json; **Motion Probability** as *json*,  
+
 2. Subsampling optical flow  
    Raw data of optical flow which is sampled as 3hz  
 &#8594;   Polarization all optical flow  
 &#8594;   Making lookup-table by scanning all optical flows in simulation(a video) at frames and all pixels in frames(pixels in frame\*frames in simulation; E.g. 1024\*768\*60 at 20s simulation)  
 &#8594;   At frame level, take probability of the polarized pixel's optical flow with the lookup table  
-&#8594;   Store **Optical Probability** in *memory*.
+
 3. Calculate MP Entropy and entropy of optical flow   
    With **Motion Probability** and **Optical Probability**  
-&#8594;   Make MP Entropy at a frame and entropy of optical flow at a frame  
-
-### Project Files
-
-- main.py  
-Subsampling(3hz) raw motion data of csv file to probability of all motion vector in experiment as csv file
-To analysis when VR sickness at simulation, it visualize optical flow of video and highlight SSQ
-
-
-
+&#8594;   Make MP Entropy at a frame and entropy of optical flow at a frame 
